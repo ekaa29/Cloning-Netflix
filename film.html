@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Daftar Film - Netflix Clone</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DIN+Condensed&family=Arial+Narrow:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            margin: 0; /* Menghapus margin default browser */
+            padding-top: 70px; /* Ruang untuk fixed header */
+        }
+
+        .main-header {
+            background-color: #1a1a1a;
+            padding: 10px 30px; /* Padding lebih kecil untuk header yang lebih ramping */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed; /* Membuat header tetap di atas */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000; /* Memastikan header di atas konten lain */
+            box-sizing: border-box; /* Memastikan padding tidak menambah lebar */
+        }
+
+        .header-left,
+        .header-center,
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'DIN Condensed', sans-serif; /* Menggunakan font DIN Condensed untuk logo */
+            font-size: 1.8rem; /* Ukuran logo diperkecil */
+            font-weight: bold;
+            color: #e50914;
+            margin-right: 30px; /* Jarak antara logo dan navigasi */
+        }
+
+        .main-nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .main-nav li {
+            margin-right: 20px;
+        }
+
+        .main-nav a {
+            color: #e5e5e5;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 400;
+            transition: color 0.3s ease;
+        }
+
+        .main-nav a:hover,
+        .main-nav a.active {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .header-right .icon-link {
+            color: #e5e5e5;
+            font-size: 1.2rem;
+            margin-left: 20px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .header-right .icon-link:hover {
+            color: #fff;
+        }
+
+        .profile-dropdown {
+            margin-left: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-dropdown img {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            object-fit: cover;
+            margin-right: 5px;
+        }
+
+        .film-section {
+            padding: 60px 30px 60px 30px; /* Menyesuaikan padding karena header fixed */
+        }
+
+        h1 {
+            font-family: 'DIN Condensed', sans-serif;
+            font-size: 1.5rem; /* Ukuran font diperkecil secara signifikan */
+            margin-bottom: 30px;
+            margin-top: 0;
+        }
+
+        .film-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 25px;
+        }
+
+        .film-card {
+            background-color: #e6e6e6;
+            border-radius: 5px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .film-card:hover {
+            transform: scale(1.03);
+        }
+
+        .film-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            display: block;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .film-details {
+            padding: 10px;
+            text-align: left;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .film-details h2 {
+            font-family: 'DIN Condensed', sans-serif;
+            font-size: 1.4rem;
+            margin-top: 0;
+            margin-bottom: 6px;
+            line-height: 1.2;
+            color: #222;
+        }
+
+        .film-details p {
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+            line-height: 1.3;
+            color: #555;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+
+        .film-details .detail-label {
+            font-weight: bold;
+            margin-right: 5px;
+            color: #333;
+        }
+
+        .film-details .running-time,
+        .film-details .directed-by,
+        .film-details .produced-by,
+        .film-details .starring {
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            font-size: 0.75rem;
+            margin-bottom: 2px;
+            color: #444;
+        }
+
+        .film-details .produced-by span {
+            color: #666;
+            font-style: italic;
+        }
+
+       .modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    padding-top: 60px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.9);
+}
+
+.modal-content {
+    margin: auto;
+    display: block;
+    max-width: 80%;
+    max-height: 80%;
+}
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+}
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-left">
+            <div class="logo">NETFLIX</div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#" class="active">Beranda</a></li>
+                    <li><a href="#">Serial TV</a></li>
+                    <li><a href="#">Film</a></li>
+                    <li><a href="#">Terbaru & Populer</a></li>
+                    <li><a href="#">Daftar Saya</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="header-right">
+            <a href="#" class="icon-link"><i class="fas fa-search"></i></a>
+            <a href="#" class="icon-link"><i class="fas fa-bell"></i></a>
+            <div class="profile-dropdown">
+                <img src="gambar/ᨳ᭬ jisung ˎˊ˗ ࿐.jpg" alt="Profil Pengguna" />
+                <i class="fas fa-caret-down" style="color: #e5e5e5; font-size: 0.8rem;"></i>
+            </div>
+        </div>
+    </header>
+
+    <section class="film-section">
+        <h1>Film Populer</h1>
+        <div class="film-grid">
+            <div class="film-card">
+                <img src="gambar/Train To Busan (2016).jpg" alt="Train To Busan" />
+                <div class="film-details">
+                    <h2>Train To Busan</h2>
+                    <p class="running-time"><span class="detail-label">running time</span> 118 min</p>
+                    <p class="directed-by"><span class="detail-label">directed by</span> Yeon Sang-ho</p>
+                    <p class="produced-by"><span class="detail-label">produced by</span> <span>Lee Dong-bin</span></p>
+                    <p class="starring"><span class="detail-label">starring</span> Gong Yoo, Jung Yu-mi, Ma Dong-seok</p>
+                    <p>Seorang ayah dan putrinya terjebak dalam kereta menuju Busan saat wabah zombie menyebar di Korea. Mereka berjuang untuk bertahan hidup bersama penumpang lainnya.</p>
+                </div>
+            </div>
+            <div class="film-card">
+                <img src="gambar/Squid Game.jpg" alt="Squid Game" />
+                <div class="film-details">
+                    <h2>Squid Game</h2>
+                    <p class="running-time"><span class="detail-label">running time</span> 9 episodes</p>
+                    <p class="directed-by"><span class="detail-label">directed by</span> Hwang Dong-hyuk</p>
+                    <p class="produced-by"><span class="detail-label">produced by</span> <span>Kim Ji-yeon</span></p>
+                    <p class="starring"><span class="detail-label">starring</span> Lee Jung-jae, Park Hae-soo, Wi Ha-joon</p>
+                    <p>Ratusan peserta yang terlilit hutang menerima undangan aneh untuk bersaing dalam permainan anak-anak. Taruhannya mematikan.</p>
+                </div>
+            </div>
+            <div class="film-card">
+                <img src="gambar/All of Us Are Dead.jpg" alt="All of Us Are Dead" />
+                <div class="film-details">
+                    <h2>All of Us Are Dead</h2>
+                    <p class="running-time"><span class="detail-label">running time</span> 12 episodes</p>
+                    <p class="directed-by"><span class="detail-label">directed by</span> Lee Jae-kyoo, Kim Nam-su</p>
+                    <p class="produced-by"><span class="detail-label">produced by</span> <span>Film Monster, JTBC Studios</span></p>
+                    <p class="starring"><span class="detail-label">starring</span> Park Ji-hu, Yoon Chan-young, Cho Yi-hyun</p>
+                    <p>Sekelompok siswa terjebak di sekolah menengah mereka saat wabah virus zombie menyebar dengan cepat.</p>
+                </div>
+            </div>
+
+            <div class="film-card">
+                <img src="gambar/Duty After School 2023.jpg" alt="Duty After School" />
+                <div class="film-details">
+                    <h2>Duty After School</h2>
+                    <p class="running-time"><span class="detail-label">running time</span> 10 episodes</p>
+                    <p class="directed-by"><span class="detail-label">directed by</span> Shin Yong-hui</p>
+                    <p class="produced-by"><span class="detail-label">produced by</span> <span>Joo Won-gyu</span></p>
+                    <p class="starring"><span class="detail-label">starring</span> Shin Hyun-soo, Lee Soon-won, Im Se-mi</p>
+                    <p>Siswa sekolah menengah harus mengikuti pelatihan militer untuk melawan makhluk asing misterius yang tiba-tiba menyerang bumi.</p>
+                </div>
+            </div>
+            <div class="film-card">
+                <img src="gambar/Revenge Of Others.jpg" alt="Revenge Of Others" />
+                <div class="film-details">
+                    <h2>Revenge Of Others</h2>
+                    <p class="running-time"><span class="detail-label">running time</span> 12 episodes</p>
+                    <p class="directed-by"><span class="detail-label">directed by</span> Kim Yoo-jin</p>
+                    <p class="produced-by"><span class="detail-label">produced by</span> <span>Studio S</span></p>
+                    <p class="starring"><span class="detail-label">starring</span> Shin Ye-eun, Lomon, Seo Ji-hoon</p>
+                    <p>Setelah saudaranya meninggal misterius, seorang siswi pindah ke sekolah yang sama untuk mengungkap kebenaran di balik kematiannya.</p>
+                </div>
+            </div>
+            <div class="film-card">
+                <img src="gambar/Weak Hero Class 1.jpg" alt="Weak Hero Class Season 1" />
+                <div class="film-details">
+                    <h2>Weak Hero Class 1</h2>
+                    <p class="running-time"><span class="detail-label">running time</span> 8 episodes</p>
+                    <p class="directed-by"><span class="detail-label">directed by</span> Yoo Soo-min</p>
+                    <p class="produced-by"><span class="detail-label">produced by</span> <span>Netflix</span></p>
+                    <p class="starring"><span class="detail-label">starring</span> Park Ji-hoon, Choi Hyun-wook, Hong Kyung</p>
+                    <p>Seorang siswa cerdas tapi lemah menggunakan otaknya untuk melawan para pengganggu di sekolah.</p>
+                </div>
+            </div>
+            <div class="film-card">
+                <img src="gambar/Night Has Come.jpg" alt="Night Has Come" />
+                <div class="film-details">
+                    <h2>Night Has Come</h2>
+                    <p class="running-time"><span class="detail-label">running time</span> 12 episodes</p>
+                    <p class="directed-by"><span class="detail-label">directed by</span> Lim Dae-woong</p>
+                    <p class="produced-by"><span class="detail-label">produced by</span> <span>Studio X+U, Studio Vplus</span></p>
+                    <p class="starring"><span class="detail-label">starring</span> Lee Jae-in, Kim Woo-seok, Choi Ye-bin</p>
+                    <p>Sekelompok siswa sekolah menengah terjebak dalam permainan mafia hidup atau mati yang misterius saat retret sekolah mereka.</p>
+                </div>
+            </div>
+            <div class="film-card">
+                <img src="gambar/Class Of Lies.jpg" alt="Class Of Lies" />
+                <div class="film-details">
+                    <h2>Class Of Lies</h2>
+                    <p class="running-time"><span class="detail-label">running time</span> 16 episodes</p>
+                    <p class="directed-by"><span class="detail-label">directed by</span> Sung Yong-il</p>
+                    <p class="produced-by"><span class="detail-label">produced by</span> <span>JTBC Studios, Studio Dragon</span></p>
+                    <p class="starring"><span class="detail-label">starring</span> Yoon Kyun-sang, Geum Sae-rok, Choi Yu-hwa</p>
+                    <p>Seorang pengacara yang reputasinya hancur menyusup ke sekolah menengah elit sebagai guru sementara untuk mengungkap kebenaran di balik pembunuhan di sekolah tersebut.</p>
+                </div>
+            </div>
+            <div class="film-card">
+                <img src="gambar/Taxi Driver Kdrama Poster.jpg" alt="Taxi Driver" />
+                <div class="film-details">
+                    <h2>Taxi Driver</h2>
+                    <p class="running-time"><span class="detail-label">running time</span> 2 seasons</p>
+                    <p class="directed-by"><span class="detail-label">directed by</span> Park Jin-woo, Lee Dan</p>
+                    <p class="produced-by"><span class="detail-label">produced by</span> <span>Studio S, Group 8</span></p>
+                    <p class="starring"><span class="detail-label">starring</span> Lee Je-hoon, Kim Eui-sung, Pyo Ye-jin</p>
+                    <p>Sebuah perusahaan taksi misterius menawarkan layanan balas dendam kepada korban yang tidak mendapatkan keadilan dari hukum.</p>
+                </div>
+            </div>
+            <div class="film-card">
+                <img src="gambar/Voice.jpg" alt="Voice" />
+                <div class="film-details">
+                    <h2>Voice</h2>
+                    <p class="running-time"><span class="detail-label">running time</span> 4 seasons</p>
+                    <p class="directed-by"><span class="detail-label">directed by</span> Kim Hong-sun (S1), Lee Seung-young (S2), Nam Ki-hoon (S3), Shin Yong-hwi (S4)</p>
+                    <p class="produced-by"><span class="detail-label">produced by</span> <span>Studio Dragon, KeyEast</span></p>
+                    <p class="starring"><span class="detail-label">starring</span> Lee Ha-na, Jang Hyuk (S1), Lee Jin-wook (S2-S3), Song Seung-heon (S4)</p>
+                    <p>Seorang profiler suara dan detektif bekerja sama di pusat panggilan darurat 112 untuk melacak penjahat menggunakan suara sebagai petunjuk utama.</p>
+                </div>
+            </div>
+            <div class="film-card">
+                <img src="gambar/The Penthaouse.jpg" alt="The Penthouse" />
+                <div class="film-details">
+                    <h2>The Penthouse</h2>
+                    <p class="running-time"><span class="detail-label">running time</span> 3 seasons</p>
+                    <p class="directed-by"><span class="detail-label">directed by</span> Joo Dong-min</p>
+                    <p class="produced-by"><span class="detail-label">produced by</span> <span>Chorokbaem Media</span></p>
+                    <p class="starring"><span class="detail-label">starring</span> Lee Ji-ah, Kim So-yeon, Eugene</p>
+                    <p>Ambisi, keserakahan, dan balas dendam menguasai penghuni apartemen mewah di Gangnam.</p>
+                </div>
+            </div>
+            <div class="film-card">
+                <img src="gambar/Emergency Declaration.jpg" alt="Emergency Declaration" />
+                <div class="film-details">
+                    <h2>Emergency Declaration</h2>
+                    <p class="running-time"><span class="detail-label">running time</span> 140 min</p>
+                    <p class="directed-by"><span class="detail-label">directed by</span> Han Jae-rim</p>
+                    <p class="produced-by"><span class="detail-label">produced by</span> <span>Han Jae-rim</span></p>
+                    <p class="starring"><span class="detail-label">starring</span> Song Kang-ho, Lee Byung-hun, Jeon Do-yeon</p>
+                    <p>Saat teroris menyebarkan virus di pesawat, pilot dan penumpang harus menghadapi keputusan hidup atau mati di ketinggian 30.000 kaki.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div id="imageModal" class="modal">
+    <span class="close">&times;</span>
+    <img class="modal-content" id="modalImg">
+</div>
+
+<script>
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImg");
+    const closeBtn = document.querySelector(".close");
+
+    // Ambil semua gambar film
+    const images = document.querySelectorAll(".film-card img");
+
+    images.forEach(img => {
+        img.addEventListener("click", function() {
+            modal.style.display = "block";
+            modalImg.src = this.src;
+        });
+    });
+
+    // Tutup modal
+    closeBtn.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // Klik luar gambar = tutup
+    modal.onclick = function(e) {
+        if (e.target === modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+</body>
+</html>
